@@ -40,10 +40,10 @@
         #var ix 1;
         #loop 1 &tomeTypes[] ix {
             buy $tomeTypes[$ix] volume %1;
-        } {
-            #echo {  <dfc>Tome Kit:  <efd>Please provide which level tome you'd like to buy, acceptable inputs are:<088>};
-            #echo {             <cfd>i,ii,iii <efd>or<cfd> 1,2,3 <efd>or<cfd> one,two,three};
         };
+    } {
+        #echo {  <dfc>Tome Kit:  <efd>Please provide which level tome you'd like to buy, acceptable inputs are:<088>};
+        #echo {             <cfd>i,ii,iii <efd>or<cfd> 1,2,3 <efd>or<cfd> one,two,three};
     };
 };
 
@@ -52,10 +52,10 @@
         #var ix 1;
         #loop 1 &tomeTypes[] ix {
             get $tomeTypes[$ix] volume %1 from box;
-        } {
-            #echo {  <dfc>Tome Kit:  <efd>Please provide which level tome you'd like to retrieve from the box, acceptable inputs are:<088>};
-            #echo {             <cfd>i,ii,iii <efd>or<cfd> 1,2,3 <efd>or<cfd> one,two,three};
         };
+    } {
+        #echo {  <dfc>Tome Kit:  <efd>Please provide which level tome you'd like to retrieve from the box, acceptable inputs are:<088>};
+        #echo {             <cfd>i,ii,iii <efd>or<cfd> 1,2,3 <efd>or<cfd> one,two,three};
     };
 };
 

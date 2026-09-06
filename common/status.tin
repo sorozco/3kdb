@@ -118,14 +118,21 @@
     #read vars/boot.tin;
     #var doorcombos $xdoorcombos;
     #var rolm $xrolm;
+    #var boot_number $xboot_number;
 
     #if {"$doorcombos" == "$xdoorcombos"} {#var doorcombos {}};
     #if {"$rolm" == "$xrolm"} {#var rolm {}};
+
 };
 
 #alias _bootVar_export {
     #class bootVars open;
-    #var xrolm $rolm;
+    #unvar xrolm;
+    #unvar xdoorcombos;
+    #unvar xboot;
+    #if {"$boot_number" == ""} {#NOP} {#var xboot_number $boot_number};
+    #if {"$rolm" == ""} {#NOP} {#var xrolm $rolm};
+    #if {"$doorcombos" == ""} {#NOP} {#var xdoorcombos $doorcombos};
     #class bootVars close;
     #class bootVars write vars/boot.tin;
 };
@@ -340,6 +347,11 @@
         #format {my[gxp][start-time]} {%T} {};
     };
     #delay 10 {reset_gxp};
+};
+
+#alias _get_boot {
+    #send {!uptime};
+    #line oneshot #action {|  Current Reboot : \#%d %*} {#var boot_number %%1} {1};
 };
 
 #class player_status close

@@ -66,7 +66,8 @@
     #read common/themes.tin;
     #read common/3kReport.tin;
 
-    #NOP -- Bash runs in the background to fire off any scripts without hanging tintin;
+    #NOP -- Get boot number;
+    _get_boot;
 };
 
 #alias {reset_trackers} {
