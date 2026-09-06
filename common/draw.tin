@@ -92,11 +92,28 @@
     #NOP -- The map will reduce by 5 rows and the status window will be larger so items like;
     #NOP -- corpses don't get cutoff.;
 
-    #if {$screen[width] < 100} {#var draw[mobile][active] 1;};
+#if {$screen[width] <= 75} {
+    #var draw[mobile][active] 1;
+    #var draw[mobile][mode] portrait;
+} {
+    #if {$screen[height] <= 20} {
+        #var draw[mobile][active] 1;
+        #var draw[mobile][mode] landscape;
+    } {
+        #var draw[mobile][active] 0;
+        #var draw[mobile][mode] desktop;
+    };
+};
 
+
+    #if {"$draw[mobile][mode]" == "portrait"} {
+    #var chat[rows] 5;
+    #math chat[height] {$chat[rows] + 2};
+} {
     #format chat[rows] {%d} {$screen[height] * $draw[chat][size]};
     #math chat[height] {$chat[rows] + 1};
     #math chat[rows] {$chat[rows] - 1};
+};
     
     #NOP -- If map width isn't set, make it 33%;
     #if {$map[widthperc] > 0} {#NOP} {#var map[widthperc] .33};
@@ -135,7 +152,7 @@
         #math chat[height] {$chat[rows] + 1};
         #math ticker[top] {$chat[height]};
         #math ticker[bottom] {$ticker[top] + @max{&ticker_data[];3} + 1};
-        #if {"$draw[map][active]" == "on" && "$draw[map][position]" == "top"} {
+        #if {"$draw[map][active]" == "on" && "$draw[map][position]" == "top" && "$draw[mobile][mode]" != "portrait"} {
             #math {chat[right]} {-$map[width]-1};
             #var ticker[right] $chat[right];
         } {
@@ -176,7 +193,13 @@
     #var split[bottom] {@max{2;$split[bottom]}};
     
     #var    split[left]     0;
+
+#if {"$draw[mobile][mode]" == "portrait"} {
+    #var split[right] 0;
+} {
     #math 	split[right]	{$map[width] + 1};
+};
+
 
     #NOP -- The map room details goes right inside the map area;
     #math draw_room[top] {$map[bottom] - 1};
@@ -331,8 +354,11 @@
 #alias draw_all {
     #if {"$draw[hpbar][active]" == "on"} { draw_hpbar };
     #if {"$draw[chat][active]" == "on"} { draw_chat };
-    #if {"$draw[caption][active]" == "on"} { _update_caption_data;draw_caption};
-    #if {"$draw[room][active]" == "on"} { draw_room };
+
+    #if {"$draw[mobile][mode]" != "portrait"} {
+        #if {"$draw[caption][active]" == "on"} { _update_caption_data;draw_caption};
+        #if {"$draw[room][active]" == "on"} { draw_room };
+    };
 };
 
 #NOP calculate hpbar size and draws initial line above hpbar area;
@@ -424,6 +450,9 @@
 
 #NOP -- CAPTION (Corpses, Eternal, Strategies, Bot Status, general data) --;
 #alias draw_caption {
+    #if {"$draw[mobile][mode]" == "portrait"} {
+        #return;
+    };
     #list caption_data clear;
     #unvar caption_order;
 
@@ -690,7 +719,7 @@
 
 #NOP -- MAP --;
 #alias init_map {
-    #if {"$draw[map][active]" == "on"} {
+    #if {"$draw[map][active]" == "on" && "$draw[mobile][mode]" != "portrait"} {
         #draw {tile} $map[top]-1 -$map[width] $map[bottom]+1 -1 {};
         #map offset $map[top] -$map[width]+2 $map[bottom]-1 -2;
         #map flag vtmap on;
@@ -706,6 +735,9 @@
 
 #NOP -- ROOM --;
 #alias draw_room {
+    #if {"$draw[mobile][mode]" == "portrait"} {
+        #return;
+    };
     #NOP Notes from mapper;
     #map get roomname roomMapNameStr;
     #map get roomnote roomMapNoteStr;
